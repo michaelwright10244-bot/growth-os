@@ -1,0 +1,14 @@
+.env
+.DS_Store
+.venv/
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+agent-runtime/node_modules/
+agent-runtime/dsh-home/
+agent-runtime/sessions/
+data/
+logs/
+.pids/
+__pycache__/
+.pytest_cache/

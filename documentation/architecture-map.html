@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Career OS | 系统架构地图</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@600;700&display=swap");
+    :root { --ink:#17221d; --soft:#52645a; --line:#d9e3dc; --paper:#fffefa; --canvas:#eef2ee; --green:#00885d; --mint:#e7f5ec; --gold:#aa7015; --gold-bg:#fff5dd; --navy:#1e2c26; --mono:"DM Mono",monospace; --sans:"Noto Sans SC",sans-serif; --serif:"Noto Serif SC",serif; }
+    * { box-sizing:border-box; } html { scroll-behavior:smooth; background:var(--canvas); } body { margin:0; color:var(--ink); font:14px/1.65 var(--sans); background:radial-gradient(circle at 85% -10%,#d9efe4 0,transparent 30%),var(--canvas); }
+    a { color:inherit; } .shell { display:grid; grid-template-columns:250px minmax(0,1fr); min-height:100vh; }
+    .sidebar { position:sticky; top:0; height:100vh; padding:28px 20px; border-right:1px solid var(--line); background:rgba(255,254,250,.88); backdrop-filter:blur(12px); }
+    .brand { display:flex; gap:10px; align-items:center; margin-bottom:38px; font-family:var(--serif); font-size:20px; } .brand b { display:grid; width:31px; height:31px; place-items:center; border-radius:7px; color:white; background:var(--green); font-family:var(--sans); font-size:16px; } .brand small { display:block; color:var(--soft); font:10px var(--mono); letter-spacing:.08em; }
+    .toc-title { margin:21px 9px 5px; color:#718077; font:10px var(--mono); letter-spacing:.12em; } .toc { display:grid; gap:3px; } .toc a { padding:7px 9px; border-radius:5px; color:var(--soft); text-decoration:none; font-size:12px; } .toc a:hover { color:var(--green); background:var(--mint); }
+    main { width:min(1240px,100%); margin:0 auto; padding:44px 42px 80px; } .kicker { color:var(--green); font:11px var(--mono); letter-spacing:.12em; } h1,h2,h3 { font-family:var(--serif); letter-spacing:-.04em; } h1 { max-width:820px; margin:12px 0 14px; font-size:clamp(35px,5vw,58px); line-height:1.14; } h1 em { color:var(--green); font-style:normal; } .lede { max-width:710px; margin:0; color:var(--soft); font-size:16px; }
+    .legend { display:flex; flex-wrap:wrap; gap:8px; margin:28px 0 42px; } .chip { padding:4px 8px; border:1px solid var(--line); border-radius:999px; background:var(--paper); color:var(--soft); font:10px var(--mono); } .chip.front { border-color:#a8d9c0; color:var(--green); background:var(--mint); } .chip.back { border-color:#dbcc9e; color:#805814; background:var(--gold-bg); }
+    section { margin-top:52px; scroll-margin-top:24px; } .section-head { display:flex; align-items:baseline; justify-content:space-between; gap:20px; margin-bottom:14px; border-bottom:1px solid var(--line); } h2 { margin:0 0 9px; font-size:27px; } .section-head small { color:var(--soft); font:10px var(--mono); }
+    .map { display:grid; grid-template-columns:1fr 64px 1fr 64px 1fr; align-items:stretch; } .lane { display:grid; gap:10px; padding:16px; border:1px solid var(--line); border-radius:10px; background:rgba(255,254,250,.82); } .lane.front { border-top:4px solid var(--green); } .lane.back { border-top:4px solid var(--gold); } .lane.data { border-top:4px solid #577268; } .lane h3 { margin:0; font-size:20px; } .lane p { margin:0 0 6px; color:var(--soft); font-size:11px; } .arrow { position:relative; min-height:100%; } .arrow::before { position:absolute; top:50%; right:11px; left:11px; height:1px; background:#96a89e; content:""; } .arrow::after { position:absolute; top:calc(50% - 4px); right:10px; width:8px; height:8px; border-top:1px solid #96a89e; border-right:1px solid #96a89e; content:""; transform:rotate(45deg); }
+    .module { display:block; padding:10px 11px; border:1px solid var(--line); border-radius:6px; background:white; text-decoration:none; transition:transform .16s ease,border-color .16s ease; } .module:hover { border-color:var(--green); transform:translateY(-2px); } .module strong { display:block; font-size:12px; } .module code,.path { color:var(--green); font:10px var(--mono); } .back .module code { color:#805814; } .module span { display:block; margin-top:2px; color:var(--soft); font-size:10px; }
+    .note { margin-top:14px; padding:12px 14px; border-left:3px solid var(--green); color:var(--soft); background:var(--mint); font-size:12px; } .note b { color:var(--ink); }
+    .match { width:100%; border-collapse:separate; border-spacing:0 7px; } .match th { padding:0 10px 4px; color:var(--soft); font:10px var(--mono); text-align:left; } .match td { padding:12px 10px; background:rgba(255,254,250,.78); border-top:1px solid var(--line); border-bottom:1px solid var(--line); vertical-align:top; } .match td:first-child { border-left:1px solid var(--line); border-radius:7px 0 0 7px; } .match td:last-child { border-right:1px solid var(--line); border-radius:0 7px 7px 0; } .match a { color:var(--green); font:11px var(--mono); text-decoration:none; } .match a:hover { text-decoration:underline; }
+    .flow { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; } .step { position:relative; min-height:137px; padding:17px; border:1px solid var(--line); border-radius:8px; background:var(--paper); } .step:not(:last-child)::after { position:absolute; top:53px; right:-17px; z-index:2; color:var(--green); content:"→"; font:20px var(--mono); } .step small { color:var(--green); font:10px var(--mono); } .step h3 { margin:14px 0 3px; font-size:17px; } .step p { margin:0; color:var(--soft); font-size:11px; }
+    .tree { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; } details { border:1px solid var(--line); border-radius:8px; background:rgba(255,254,250,.78); } summary { padding:13px 15px; cursor:pointer; font-weight:600; } summary code { color:var(--green); font:11px var(--mono); } .files { margin:0; padding:0 16px 14px 35px; color:var(--soft); font:11px/1.8 var(--mono); } .files a { color:var(--green); text-decoration:none; } .files a:hover { text-decoration:underline; }
+    .principles { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; } .principle { padding:18px; border-radius:9px; color:#dcebe3; background:var(--navy); } .principle:nth-child(2) { background:#315548; } .principle:nth-child(3) { background:#715917; } .principle small { color:#9fd9ba; font:10px var(--mono); } .principle:nth-child(3) small { color:#eed38a; } .principle h3 { margin:9px 0 4px; font-size:18px; } .principle p { margin:0; color:#c4d3cb; font-size:11px; } footer { margin-top:55px; padding-top:18px; border-top:1px solid var(--line); color:var(--soft); font:10px var(--mono); }
+    @media (max-width:900px) { .shell { display:block; } .sidebar { position:static; height:auto; padding:18px; border-right:0; border-bottom:1px solid var(--line); } .brand { margin-bottom:10px; } .toc-title { display:none; } .toc { display:flex; overflow:auto; } .toc a { white-space:nowrap; } main { padding:31px 20px 55px; } .map { grid-template-columns:1fr; gap:12px; } .arrow { min-height:22px; transform:rotate(90deg); } .flow,.principles { grid-template-columns:1fr; } .step:not(:last-child)::after { top:auto; right:auto; bottom:-20px; left:calc(50% - 6px); transform:rotate(90deg); } .tree { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><b>职</b><span>Career OS<small>ARCHITECTURE MAP / V0.2</small></span></div>
+      <nav class="toc">
+        <a href="#system">01 系统全景</a><a href="#mapping">02 前后端对应</a><a href="#flow">03 数据流</a><a href="#files">04 文件地图</a><a href="#principles">05 设计原则</a>
+      </nav>
+    </aside>
+    <main>
+      <header>
+        <div class="kicker">LOCAL-FIRST CAREER WORKSPACE</div>
+        <h1>一张图看懂<br><em>Career OS</em> 怎么工作。</h1>
+        <p class="lede">这是面向维护者的活文档：从职业工作台的页面、到 API 路由、业务规则和 SQLite 数据，都能找到相应模块与真实源码入口。</p>
+        <div class="legend"><span class="chip front">FRONTEND / React + TypeScript</span><span class="chip back">BACKEND / FastAPI + Python</span><span class="chip">LOCAL DATA / SQLite</span><span class="chip">点击卡片可打开源码</span></div>
+      </header>
+
+      <section id="system">
+        <div class="section-head"><h2>01 · 系统全景</h2><small>从浏览器到本地数据库</small></div>
+        <div class="map">
+          <div class="lane front"><h3>职业工作台</h3><p>Vite + React。页面渲染、用户交互和本地简历偏好。</p><a class="module" href="../frontend/src/App.tsx"><strong>App Shell</strong><code>frontend/src/App.tsx</code><span>路由、共享数据、应用框架</span></a><a class="module" href="../frontend/src/pages/Projects.tsx"><strong>业务页面</strong><code>frontend/src/pages/</code><span>按项目、资料、岗位等业务域拆分</span></a><a class="module" href="../frontend/src/resume/Resume.tsx"><strong>电子简历</strong><code>frontend/src/resume/</code><span>专属 UI、拖拽顺序、本地头像</span></a></div>
+          <div class="arrow" aria-hidden="true"></div>
+          <div class="lane back"><h3>本地 API</h3><p>FastAPI。验证输入、调用业务规则、保持统一响应格式。</p><a class="module" href="../backend/app/main.py"><strong>Application Shell</strong><code>backend/app/main.py</code><span>生命周期、中间件、错误处理、路由注册</span></a><a class="module" href="../backend/app/routes/projects.py"><strong>Route Modules</strong><code>backend/app/routes/</code><span>按业务域拆分 HTTP 入口</span></a><a class="module" href="../backend/app/services.py"><strong>Career Service</strong><code>backend/app/services.py</code><span>共享业务规则和数据访问编排</span></a></div>
+          <div class="arrow" aria-hidden="true"></div>
+          <div class="lane data"><h3>可信数据</h3><p>单机 SQLite。原始资料私密，只有公开项目进入简历读取。</p><a class="module" href="../backend/app/storage.py"><strong>Storage</strong><code>backend/app/storage.py</code><span>表初始化、种子数据、SQLite 边界</span></a><a class="module" href="../data/career-os.db"><strong>career-os.db</strong><code>data/career-os.db</code><span>本地职业资产数据库</span></a><a class="module" href="../backend/app/schemas.py"><strong>Input Schemas</strong><code>backend/app/schemas.py</code><span>Pydantic 校验与字段约束</span></a></div>
+        </div>
+        <p class="note"><b>运行边界：</b>浏览器只通过 <code>/api</code> 调用本地后端；网页不直接读取 SQLite，也不直接执行 Shell。职业资料默认私密，公开状态仅影响电子简历读取。</p>
+      </section>
+
+      <section id="mapping">
+        <div class="section-head"><h2>02 · 前后端模块如何对应</h2><small>名称一致优先，职责一致优先于目录镜像</small></div>
+        <table class="match"><thead><tr><th>用户看到的板块</th><th>前端模块</th><th>后端模块</th><th>为什么这样拆</th></tr></thead><tbody>
+          <tr><td>电子简历</td><td><a href="../frontend/src/resume/Resume.tsx">resume/</a></td><td><a href="../backend/app/routes/resume.py">routes/resume.py</a></td><td>名称完全一致；后端只读取职业档案与公开项目。</td></tr>
+          <tr><td>项目中心</td><td><a href="../frontend/src/pages/Projects.tsx">pages/Projects.tsx</a></td><td><a href="../backend/app/routes/projects.py">routes/projects.py</a></td><td>项目创建、更新、公开状态都在同一业务域。</td></tr>
+          <tr><td>职业资料收件箱</td><td><a href="../frontend/src/pages/Library.tsx">pages/Library.tsx</a></td><td><a href="../backend/app/routes/materials.py">routes/materials.py</a></td><td>前端用产品语言“收件箱”，后端用数据实体 materials。</td></tr>
+          <tr><td>职业 Git / 待审核</td><td><a href="../frontend/src/pages/CareerGit.tsx">CareerGit.tsx + Review.tsx</a></td><td><a href="../backend/app/routes/career.py">routes/career.py</a></td><td>commit 与 draft 都属于职业记录沉淀，不重复拆一层服务。</td></tr>
+          <tr><td>目标岗位</td><td><a href="../frontend/src/pages/Opportunities.tsx">pages/Opportunities.tsx</a></td><td><a href="../backend/app/routes/opportunities.py">routes/opportunities.py</a></td><td>岗位保存与显式 AI 分析是一条机会评估链路。</td></tr>
+          <tr><td>设置 / 编码任务</td><td><a href="../frontend/src/pages/Settings.tsx">pages/Settings.tsx</a></td><td><a href="../backend/app/routes/agent_runs.py">routes/agent_runs.py</a></td><td>设置是入口页；Agent 是独立的受控运行能力。</td></tr>
+          <tr><td>职业全景 / 能力地图</td><td><a href="../frontend/src/pages/Overview.tsx">Overview.tsx + Capabilities.tsx</a></td><td>组合读取多个领域</td><td>它们是聚合视图，不创建没有独立实体的伪后端模块。</td></tr>
+        </tbody></table>
+      </section>
+
+      <section id="flow">
+        <div class="section-head"><h2>03 · 核心数据流</h2><small>以“项目进入电子简历”为例</small></div>
+        <div class="flow"><article class="step"><small>01 / INPUT</small><h3>创建项目</h3><p><code>Projects.tsx</code> 通过 <code>api.ts</code> 提交项目表单。</p></article><article class="step"><small>02 / VALIDATE</small><h3>路由验证</h3><p><code>routes/projects.py</code> 使用 Pydantic schema 验证输入。</p></article><article class="step"><small>03 / PERSIST</small><h3>写入职业资产</h3><p><code>CareerService</code> 调用 <code>Storage</code> 更新 SQLite。</p></article><article class="step"><small>04 / SHOW</small><h3>选择公开展示</h3><p><code>resume.py</code> 只查询 <code>is_public = true</code> 的项目。</p></article></div>
+        <p class="note"><b>安全设计：</b>关联资料、草稿、来源 URL 不会经由 <code>GET /api/resume</code> 返回。AI 分析也只有在用户明确勾选并点击后才会执行。</p>
+      </section>
+
+      <section id="files">
+        <div class="section-head"><h2>04 · 文件地图</h2><small>展开查看每个目录的职责</small></div>
+        <div class="tree">
+          <details open><summary><code>frontend/src/</code> — 界面与交互</summary><ul class="files"><li><a href="../frontend/src/App.tsx">App.tsx</a> — 应用壳、hash 路由、共享上下文</li><li><a href="../frontend/src/api.ts">api.ts</a> — 唯一 HTTP 客户端与 API 类型</li><li><a href="../frontend/src/pages/">pages/</a> — 可独立访问的业务页面</li><li><a href="../frontend/src/components/">components/</a> — 跨页面复用 UI 和弹窗</li><li><a href="../frontend/src/resume/">resume/</a> — 简历页面、专属样式、localStorage 偏好</li><li><a href="../frontend/src/types.ts">types.ts</a> — 页面共享上下文类型</li><li><a href="../frontend/src/styles.css">styles.css</a> — 全局设计 token 与基础样式</li></ul></details>
+          <details open><summary><code>backend/app/</code> — 本地 API 与业务规则</summary><ul class="files"><li><a href="../backend/app/main.py">main.py</a> — FastAPI 壳、生命周期、中间件、错误处理</li><li><a href="../backend/app/routes/">routes/</a> — 对外 HTTP 接口，按业务域分文件</li><li><a href="../backend/app/services.py">services.py</a> — 跨路由共享的业务规则</li><li><a href="../backend/app/storage.py">storage.py</a> — SQLite 初始化和持久化边界</li><li><a href="../backend/app/schemas.py">schemas.py</a> — 输入校验模型</li><li><a href="../backend/app/advisor.py">advisor.py</a> — 岗位分析的受控 AI 调用</li><li><a href="../backend/app/agent.py">agent.py</a> — 固定工作区的编码 Agent 运行管理</li></ul></details>
+          <details><summary><code>documentation/</code> — 持久化设计说明</summary><ul class="files"><li><a href="architecture.md">architecture.md</a> — 可搜索的文字架构说明</li><li><a href="flows.md">flows.md</a> — 业务流程</li><li><a href="permissions.md">permissions.md</a> — 数据与权限边界</li><li><a href="tests.md">tests.md</a> — 已覆盖的验证场景</li></ul></details>
+          <details><summary><code>data/</code> — 单机持久化数据</summary><ul class="files"><li><a href="../data/career-os.db">career-os.db</a> — SQLite 数据库</li><li>JSON 导出由 <code>GET /api/exports/career-data</code> 提供</li></ul></details>
+        </div>
+      </section>
+
+      <section id="principles">
+        <div class="section-head"><h2>05 · 设计原则</h2><small>为扩展留边界，不为想象中的需求加层</small></div>
+        <div class="principles"><article class="principle"><small>01 / DOMAIN FIRST</small><h3>按业务域拆</h3><p>项目、资料、简历、岗位各自聚合；共享规则继续留在 Service，避免只为目录镜像产生空模块。</p></article><article class="principle"><small>02 / LOCAL FIRST</small><h3>数据在本机</h3><p>SQLite 是唯一业务数据源。浏览器 localStorage 只保存头像和模块排序等展示偏好。</p></article><article class="principle"><small>03 / EXPLICIT CONSENT</small><h3>用户主动授权</h3><p>公开项目才进简历；资料需要明确允许才可随 AI 分析发送；网页不执行任意命令。</p></article></div>
+      </section>
+      <footer>CAREER OS · ARCHITECTURE MAP · 更新时同步维护本页与 architecture.md</footer>
+    </main>
+  </div>
+</body>
+</html>
